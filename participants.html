@@ -15,6 +15,7 @@
             <ul class="flex space-x-6">
                 <li><a href="index.html" class="hover:text-blue-400">Beranda</a></li>
                 <li><a href="participants.html" class="hover:text-blue-400">Peserta</a></li>
+                <li><a href="schedule.html" class="hover:text-blue-400">Jadwal</a></li>
                 <li><a href="rules.html" class="hover:text-blue-400">Aturan</a></li>
             </ul>
         </div>
@@ -34,10 +35,19 @@
                         <th class="p-4">Status</th>
                     </tr>
                 </thead>
-                <tbody id="participants-body" class="animate-loop"></tbody>
+                <tbody id="participants-body"></tbody>
             </table>
         </div>
     </section>
+
+    <!-- Pop-up Modal -->
+    <div id="popup-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-gray-800 p-6 rounded-lg max-w-md w-full">
+            <h3 id="popup-title" class="text-2xl font-bold mb-4"></h3>
+            <p id="popup-members" class="mb-4"></p>
+            <button id="close-popup" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">Tutup</button>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="bg-gray-800 p-4 text-center">
@@ -48,20 +58,41 @@
     <script src="js/participants.js"></script>
     <script>
         const tbody = document.getElementById('participants-body');
-        
+        const modal = document.getElementById('popup-modal');
+        const popupTitle = document.getElementById('popup-title');
+        const popupMembers = document.getElementById('popup-members');
+        const closePopup = document.getElementById('close-popup');
+
         // Populate table with data from participants.js
         participantsData.forEach((participant, index) => {
             const row = document.createElement('tr');
-            row.className = 'bg-gray-800 hover:bg-gray-700 transition-colors';
+            row.className = 'bg-gray-800 hover:bg-gray-700 transition-colors cursor-pointer';
             row.innerHTML = `
                 <td class="p-4">${index + 1}</td>
                 <td class="p-4">${participant.teamName}</td>
                 <td class="p-4">${participant.leader}</td>
-                <td class="p-4">${participant.members}</td>
+                <td class="p-4">${participant.members.length}</td>
                 <td class="p-4"><span class="bg-green-500 text-white px-2 py-1 rounded">${participant.status}</span></td>
             `;
+            row.addEventListener('click', () => {
+                popupTitle.textContent = participant.teamName;
+                popupMembers.innerHTML = `<strong>Anggota Tim:</strong><br>${participant.members.join('<br>')}`;
+                modal.classList.remove('hidden');
+            });
             tbody.appendChild(row);
+        });
+
+        // Close pop-up
+        closePopup.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+
+        // Close pop-up when clicking outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+            }
         });
     </script>
 </body>
-                  </html>
+    </html>
