@@ -1,17 +1,14 @@
 /* css/styles.css */
-.animate-loop {
-    animation: loopTable 20s linear infinite;
+#popup-modal {
+    transition: opacity 0.3s ease;
 }
 
-@keyframes loopTable {
-    0% {
-        transform: translateY(0);
-    }
-    100% {
-        transform: translateY(-100%);
-    }
+#popup-modal.hidden {
+    opacity: 0;
+    pointer-events: none;
 }
 
-.animate-loop tr {
-    transition: all 0.3s ease;
+#popup-modal .bg-gray-800 {
+    transform: scale(1);
+    transition: transform 0.3s ease;
 }
