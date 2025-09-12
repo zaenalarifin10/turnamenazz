@@ -1,0 +1,17 @@
+/* css/styles.css */
+.animate-loop {
+    animation: loopTable 20s linear infinite;
+}
+
+@keyframes loopTable {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-100%);
+    }
+}
+
+.animate-loop tr {
+    transition: all 0.3s ease;
+}
