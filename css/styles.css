@@ -12,3 +12,8 @@
     transform: scale(1);
     transition: transform 0.3s ease;
 }
+
+/* Ensure table cells are centered for score */
+td.text-center {
+    text-align: center;
+}
