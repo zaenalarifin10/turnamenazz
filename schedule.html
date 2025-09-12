@@ -31,14 +31,24 @@
                         <th class="p-4">Tanggal</th>
                         <th class="p-4">Jam</th>
                         <th class="p-4">Tim 1</th>
-                        <th class="p-4">vs</th>
+                        <th class="p-4">Skor</th>
                         <th class="p-4">Tim 2</th>
+                        <th class="p-4">Status</th>
                     </tr>
                 </thead>
                 <tbody id="schedule-body"></tbody>
             </table>
         </div>
     </section>
+
+    <!-- Pop-up Modal for Ongoing Match -->
+    <div id="popup-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-gray-800 p-6 rounded-lg max-w-md w-full">
+            <h3 id="popup-title" class="text-2xl font-bold mb-4"></h3>
+            <p id="popup-details" class="mb-4"></p>
+            <button id="close-popup" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">Tutup</button>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="bg-gray-800 p-4 text-center">
@@ -49,20 +59,67 @@
     <script src="js/schedule.js"></script>
     <script>
         const tbody = document.getElementById('schedule-body');
+        const modal = document.getElementById('popup-modal');
+        const popupTitle = document.getElementById('popup-title');
+        const popupDetails = document.getElementById('popup-details');
+        const closePopup = document.getElementById('close-popup');
+
+        // Current date and time for status logic
+        const now = new Date();
+        const wibOffset = 7 * 60 * 60 * 1000; // WIB is UTC+7
+        const currentTime = new Date(now.getTime() + wibOffset);
 
         // Populate table with schedule data
         scheduleData.forEach((match, index) => {
             const row = document.createElement('tr');
             row.className = 'bg-gray-800 hover:bg-gray-700 transition-colors';
+
+            // Determine status and score display
+            let statusText, scoreDisplay;
+            if (match.status === 'selesai') {
+                const team1ScoreColor = match.winner === match.team1 ? 'text-green-500' : 'text-red-500';
+                const team2ScoreColor = match.winner === match.team2 ? 'text-green-500' : 'text-red-500';
+                statusText = 'Selesai';
+                scoreDisplay = `<span class="${team1ScoreColor}">${match.score.team1}</span> : <span class="${team2ScoreColor}">${match.score.team2}</span>`;
+            } else if (match.status === 'sedang berlangsung') {
+                statusText = 'Sedang Berlangsung';
+                scoreDisplay = 'LIVE';
+                row.className += ' cursor-pointer';
+                row.addEventListener('click', () => {
+                    popupTitle.textContent = `${match.team1} vs ${match.team2}`;
+                    popupDetails.innerHTML = `Pertandingan sedang berlangsung!<br>Tanggal: ${match.date}<br>Jam: ${match.time}`;
+                    modal.classList.remove('hidden');
+                });
+            } else {
+                statusText = 'Belum Mulai';
+                scoreDisplay = '<span class="text-gray-500">0 : 0</span>';
+            }
+
             row.innerHTML = `
                 <td class="p-4">${match.date}</td>
                 <td class="p-4">${match.time}</td>
                 <td class="p-4">${match.team1}</td>
-                <td class="p-4 text-center">vs</td>
+                <td class="p-4 text-center">${scoreDisplay}</td>
                 <td class="p-4">${match.team2}</td>
+                <td class="p-4"><span class="px-2 py-1 rounded ${
+                    match.status === 'sedang berlangsung' ? 'bg-yellow-500' : 
+                    match.status === 'selesai' ? 'bg-green-500' : 'bg-gray-500'
+                }">${statusText}</span></td>
             `;
             tbody.appendChild(row);
         });
+
+        // Close pop-up
+        closePopup.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+
+        // Close pop-up when clicking outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
     </script>
 </body>
-                  </html>
+    </html>
