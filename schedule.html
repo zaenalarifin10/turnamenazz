@@ -64,11 +64,6 @@
         const popupDetails = document.getElementById('popup-details');
         const closePopup = document.getElementById('close-popup');
 
-        // Current date and time for status logic
-        const now = new Date();
-        const wibOffset = 7 * 60 * 60 * 1000; // WIB is UTC+7
-        const currentTime = new Date(now.getTime() + wibOffset);
-
         // Populate table with schedule data
         scheduleData.forEach((match, index) => {
             const row = document.createElement('tr');
